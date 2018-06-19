@@ -709,6 +709,33 @@ class Compound(object):
                 new_child.periodicity.any()):
             self.periodicity = new_child.periodicity
 
+    def __add__(self,new_siblings):
+        """Implements the + operator for the most common use of add()
+        
+        Note:
+            This just passes the Compounds to add with all default keyargs to
+            add. This is meant to add all Compounds involed as siblings into a
+            new Compound.
+
+            Parameters
+            ----------
+            new_siblings: list-like of mb.Compound
+                The objects to be added with this Compound
+        """
+        if isinstance(new_siblings, Compound):
+            raise ValueError('Adding to compounds is currently only supported '
+                            'for lists of compounds. Try Parent = '
+                            'mb.Compound();Parent.add(compound_A);'
+                            'Parent.add(compound_B) or alternativly Parent = '
+                            'compound_A + [compound_B]')
+
+        new_parent = Compound()
+        new_parent.add(self)
+        new_parent.add(new_siblings)
+        return new_parent
+
+    __radd__ = __add__ #Ensures [List] + Compound works
+
     def remove(self, objs_to_remove):
         """Remove children from the Compound.
 
